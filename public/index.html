@@ -3,63 +3,31 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Payment Integration Starter Kit</title>
-    <meta name="description" content="Reusable Stripe and PayPal checkout flows for small web projects.">
+    <title>Payment Widget Demo</title>
+    <meta name="description" content="Embeddable Stripe and PayPal payment widget for small web projects.">
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
-    <main class="shell">
-      <section class="hero">
-        <p class="eyebrow">Test and sandbox checkout flows</p>
-        <h1>Payment Integration Starter Kit</h1>
-        <p class="lead">Reusable Stripe and PayPal checkout flows for small web projects. Built to be understood, tested, and adapted.</p>
+    <main class="demo-shell">
+      <section class="demo-copy" aria-labelledby="demo-title">
+        <p class="demo-kicker">Reusable payment component</p>
+        <h1 id="demo-title">Payment widget starter kit</h1>
+        <p class="demo-lead">A small payment widget that can sit inside another page instead of taking over the whole layout.</p>
       </section>
 
-      <section class="panel checkout-grid" aria-labelledby="checkout-title">
-        <div class="product-card">
-          <p class="section-label">Example product</p>
-          <h2 id="checkout-title">Starter Website Deposit</h2>
-          <p class="muted">Example service deposit for testing one-off checkout flows.</p>
-
-          <div class="price-row">
-            <span id="product-price">£25.00</span>
-            <span id="product-currency">GBP</span>
+      <section class="demo-preview" aria-label="Payment widget preview">
+        <div class="merchant-panel">
+          <div class="merchant-header">
+            <span>Example service page</span>
+            <strong>Starter Website Deposit</strong>
           </div>
 
-          <div class="notice">
-            <strong>Test mode only.</strong>
-            No real payment should be taken while using the example configuration.
-          </div>
+          <div id="payment-widget"></div>
         </div>
-
-        <div class="payment-card">
-          <p class="section-label">Choose a provider</p>
-
-          <button class="button stripe" id="stripe-button" type="button">
-            Pay with Stripe
-          </button>
-
-          <div class="divider"><span>or</span></div>
-
-          <div id="paypal-button-container" class="paypal-box"></div>
-
-          <p id="status-message" class="status" role="status">Provider buttons will appear when configuration is available.</p>
-        </div>
-      </section>
-
-      <section class="details">
-        <article>
-          <h2>What this shows</h2>
-          <p>Provider logic is split into routes and services. Secret keys stay on the server. The frontend only calls controlled API endpoints.</p>
-        </article>
-
-        <article>
-          <h2>What this is not</h2>
-          <p>This is not a complete production payment system. Live payments need webhook verification, deployment checks, logging, and a proper fulfilment flow.</p>
-        </article>
       </section>
     </main>
 
+    <script src="/payment-widget.js"></script>
     <script src="/app.js"></script>
   </body>
 </html>
