@@ -1,18 +1,18 @@
 # Payment Integration Starter Kit
 
-Reusable Stripe and PayPal checkout flows for small web projects.
+Reusable Stripe and PayPal checkout widget for small web projects.
 
-This project is a Node.js and Express starter kit for adding basic payment flows to service pages, digital product pages, small business sites, and one-off checkout screens. It is built to be readable, tested locally, and adapted into other projects without hiding the payment logic inside a large framework.
+This project is a Node.js and Express starter kit for adding a compact payment component to service pages, product pages, booking flows, and small business websites. The frontend is designed as an embeddable widget rather than a full standalone checkout page.
 
 The current version is test and sandbox focused. It is not a complete production payment system. Live payment use needs webhook verification, order records, deployment checks, logging, and a proper fulfilment process.
 
 ## What it includes
 
+- Embeddable payment widget
 - Stripe Checkout Session flow
 - PayPal order create and capture flow
 - Separate route and service files for each provider
 - Example product configuration
-- Static frontend checkout page
 - Success and cancel pages
 - Environment variable based configuration
 - Manual testing notes
@@ -42,6 +42,7 @@ payment-integration-starter-kit/
 │   ├── cancel.html
 │   ├── error.html
 │   ├── styles.css
+│   ├── payment-widget.js
 │   └── app.js
 ├── src/
 │   ├── config/
@@ -66,7 +67,8 @@ payment-integration-starter-kit/
 │   ├── SECURITY_NOTES.md
 │   ├── SETUP.md
 │   ├── STRIPE.md
-│   └── TESTING.md
+│   ├── TESTING.md
+│   └── WIDGET_USAGE.md
 ├── screenshots/
 ├── .env.example
 ├── .gitignore
@@ -77,7 +79,7 @@ payment-integration-starter-kit/
 └── README.md
 ```
 
-## How the example works
+## How the widget works
 
 The example product is a small service deposit:
 
@@ -86,9 +88,30 @@ Starter Website Deposit
 £25.00 GBP
 ```
 
-The frontend loads the product from the local API, checks which providers are configured, and shows the available checkout options.
+`public/payment-widget.js` renders the checkout component into a host element. The demo page at `public/index.html` is only there to show how the widget would look inside another website.
+
+The widget loads the product from the local API, checks which providers are configured, and renders the available checkout options.
 
 Stripe uses a server-created Checkout Session. PayPal uses the JavaScript SDK on the frontend, while order creation and capture are handled by the Express backend.
+
+## Basic widget embed
+
+```html
+<div id="payment-widget"></div>
+
+<script src="/payment-widget.js"></script>
+<script>
+  window.PaymentIntegrationWidget.mount('#payment-widget', {
+    merchantName: 'Example merchant',
+    title: 'Complete your deposit',
+    subtitle: 'Choose card or PayPal to test the checkout flow.',
+    productId: 'website-deposit',
+    testMode: true
+  });
+</script>
+```
+
+See `docs/WIDGET_USAGE.md` for all widget options.
 
 ## Local setup
 
@@ -110,7 +133,7 @@ On Windows PowerShell:
 Copy-Item .env.example .env
 ```
 
-Edit `.env` with your own Stripe test key and PayPal sandbox credentials.
+Edit `.env` with your own Stripe test key and PayPal sandbox configuration.
 
 Run a backend syntax check:
 
@@ -161,7 +184,7 @@ POST /api/paypal/capture-order/:orderId
 
 ## Security position
 
-This project keeps secret keys server-side and uses environment variables for local configuration.
+This project keeps provider secret keys server-side and uses environment variables for local configuration.
 
 The frontend success page is not treated as proof of payment. In a real project, fulfilment should only happen after a verified server-side payment event.
 
@@ -186,6 +209,7 @@ See `docs/AI_USAGE.md` for the project-specific notes.
 
 ## Documentation
 
+- `docs/WIDGET_USAGE.md` explains how to embed and configure the widget.
 - `docs/SETUP.md` explains local setup.
 - `docs/STRIPE.md` explains the Stripe flow.
 - `docs/PAYPAL.md` explains the PayPal flow.
@@ -198,7 +222,7 @@ See `docs/AI_USAGE.md` for the project-specific notes.
 
 ## Current status
 
-This repo has the first starter-kit foundation in place. Local provider testing still needs to be completed with real Stripe test credentials and PayPal sandbox credentials.
+The repo now has the first embeddable widget foundation in place. Local provider testing still needs to be completed with real Stripe test credentials and PayPal sandbox credentials.
 
 ## License
 
