@@ -1,7 +1,7 @@
 window.PaymentIntegrationWidget.mount('#payment-widget', {
   merchantName: 'Nathan May Web Projects',
-  title: 'Complete your deposit',
-  subtitle: 'Choose card or PayPal to test the checkout flow.',
+  title: 'Checkout',
+  subtitle: 'Pay the starter deposit using card or PayPal sandbox checkout.',
   productId: 'website-deposit',
   testMode: true
 });
