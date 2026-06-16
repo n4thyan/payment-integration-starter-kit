@@ -1,123 +1,188 @@
 # Payment Integration Starter Kit
 
-A reusable Stripe and PayPal checkout starter kit for small web projects, digital products, service deposits, and one-off payments.
+Reusable Stripe and PayPal checkout flows for small web projects.
 
-This project is designed to provide a clean starting point for adding payment flows to simple websites without rebuilding the same boilerplate for every project.
+This project is a Node.js and Express starter kit for adding basic payment flows to service pages, digital product pages, small business sites, and one-off checkout screens. It is built to be readable, tested locally, and adapted into other projects without hiding the payment logic inside a large framework.
 
-## Project Status
+The current version is test and sandbox focused. It is not a complete production payment system. Live payment use needs webhook verification, order records, deployment checks, logging, and a proper fulfilment process.
 
-This repository is currently in active development.
+## What it includes
 
-The first version will focus on sandbox-only payment flows, clear project structure, safe environment variable handling, and practical documentation. Production payment handling will require additional review, security checks, webhook validation, and deployment-specific configuration.
+- Stripe Checkout Session flow
+- PayPal order create and capture flow
+- Separate route and service files for each provider
+- Example product configuration
+- Static frontend checkout page
+- Success and cancel pages
+- Environment variable based configuration
+- Manual testing notes
+- Security notes
+- AI-assisted development notes
 
-## Planned Features
+## Tech stack
 
-* Stripe Checkout sandbox integration
-* PayPal sandbox checkout integration
-* Example product checkout page
-* Digital product payment example
-* Service deposit payment example
-* One-off payment example
-* Success and cancel pages
-* Environment-based configuration
-* `.env.example` file for safe setup
-* Basic webhook examples
-* Manual testing checklist
-* Setup documentation for adapting the kit into other projects
+- Node.js
+- Express
+- Stripe Node SDK
+- PayPal REST API calls
+- Plain HTML, CSS, and JavaScript
+- dotenv for local environment variables
 
-## Intended Use Cases
-
-This starter kit is intended for small web projects that need a simple payment foundation, including:
-
-* Digital downloads
-* Portfolio product demos
-* Service deposits
-* Small business payment pages
-* One-off checkout links
-* Prototype ecommerce flows
-
-It is not intended to be a complete ecommerce platform, subscription billing system, accounting system, or production-ready payment processor without further work.
-
-## Planned Tech Stack
-
-* Node.js
-* Express
-* Stripe Checkout
-* PayPal Checkout
-* HTML, CSS, and JavaScript
-* Environment variables for private API keys
-
-## Security Notes
-
-Payment integrations must be handled carefully.
-
-This project will not include real production API keys. Sensitive keys should always be stored in environment variables and should never be committed to GitHub.
-
-The starter kit will be built around sandbox and test-mode payment flows first. Any production use should include proper webhook verification, error handling, logging, HTTPS deployment, and payment provider configuration checks.
-
-## Planned Project Structure
+## Project structure
 
 ```text
 payment-integration-starter-kit/
-│
 ├── public/
 │   ├── index.html
 │   ├── success.html
 │   ├── cancel.html
+│   ├── error.html
 │   ├── styles.css
 │   └── app.js
-│
-├── server/
-│   ├── server.js
-│   ├── stripe.js
-│   ├── paypal.js
-│   └── config.js
-│
+├── src/
+│   ├── config/
+│   │   └── env.js
+│   ├── data/
+│   │   └── products.js
+│   ├── routes/
+│   │   ├── health.routes.js
+│   │   ├── paypal.routes.js
+│   │   ├── products.routes.js
+│   │   └── stripe.routes.js
+│   ├── services/
+│   │   ├── paypal.service.js
+│   │   └── stripe.service.js
+│   └── server.js
 ├── docs/
-│   ├── setup.md
-│   ├── stripe.md
-│   ├── paypal.md
-│   ├── testing.md
-│   └── development-notes.md
-│
+│   ├── AI_USAGE.md
+│   ├── PAYPAL.md
+│   ├── ROADMAP.md
+│   ├── SECURITY_NOTES.md
+│   ├── SETUP.md
+│   ├── STRIPE.md
+│   └── TESTING.md
 ├── screenshots/
 ├── .env.example
 ├── .gitignore
-├── package.json
 ├── LICENSE
+├── package.json
 └── README.md
 ```
 
-## Development Approach
+## How the example works
 
-This project is being built as a practical portfolio project with a focus on clarity, safe configuration, reusable structure, and documentation.
+The example product is a small service deposit:
 
-AI tools may be used during development to speed up boilerplate, compare implementation approaches, review edge cases, and improve documentation. All code will be manually reviewed, tested, and adjusted before being treated as part of the finished project.
+```text
+Starter Website Deposit
+£25.00 GBP
+```
 
-## Roadmap
+The frontend loads the product from the local API, checks which providers are configured, and shows the available checkout options.
 
-### Version 0.1
+Stripe uses a server-created Checkout Session. PayPal uses the JavaScript SDK on the frontend, while order creation and capture are handled by the Express backend.
 
-* Initial project scaffold
-* Static checkout demo page
-* Express server setup
-* Environment configuration
-* Stripe sandbox checkout route
+## Local setup
 
-### Version 0.2
+Install dependencies:
 
-* PayPal sandbox checkout route
-* Success and cancel page handling
-* Improved error handling
-* Setup documentation
+```bash
+npm install
+```
 
-### Version 0.3
+Copy the example environment file:
 
-* Basic webhook examples
-* Manual testing checklist
-* Screenshots
-* First portfolio-ready release
+```bash
+cp .env.example .env
+```
+
+On Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Edit `.env` with your own Stripe test key and PayPal sandbox credentials.
+
+Run the server:
+
+```bash
+npm run dev
+```
+
+Open:
+
+```text
+http://localhost:4242
+```
+
+## Environment variables
+
+```text
+PORT=4242
+APP_BASE_URL=http://localhost:4242
+NODE_ENV=development
+
+STRIPE_SECRET_KEY=sk_test_replace_me
+STRIPE_CURRENCY=gbp
+
+PAYPAL_CLIENT_ID=replace_me
+PAYPAL_CLIENT_SECRET=replace_me
+PAYPAL_BASE_URL=https://api-m.sandbox.paypal.com
+PAYPAL_CURRENCY=GBP
+```
+
+Do not commit `.env` or real provider credentials.
+
+## Local API routes
+
+```text
+GET  /api/health
+GET  /api/products/default
+POST /api/stripe/create-checkout-session
+GET  /api/paypal/config
+POST /api/paypal/create-order
+POST /api/paypal/capture-order/:orderId
+```
+
+## Security position
+
+This project keeps secret keys server-side and uses environment variables for local configuration.
+
+The frontend success page is not treated as proof of payment. In a real project, fulfilment should only happen after a verified server-side payment event.
+
+Before live use, the project would need at minimum:
+
+- HTTPS deployment
+- Stripe webhook signature verification
+- PayPal webhook verification or event validation
+- Server-side order records
+- Request validation
+- Rate limiting
+- Safe logging
+- A real fulfilment flow
+
+## AI-assisted development
+
+AI was used as a development assistant for planning, structure, debugging checks, and documentation wording.
+
+The aim is not to hide AI use. The aim is to show a practical workflow where generated suggestions are reviewed, edited, tested, and documented before they are treated as finished.
+
+See `docs/AI_USAGE.md` for the project-specific notes.
+
+## Documentation
+
+- `docs/SETUP.md` explains local setup.
+- `docs/STRIPE.md` explains the Stripe flow.
+- `docs/PAYPAL.md` explains the PayPal flow.
+- `docs/TESTING.md` is the manual testing checklist.
+- `docs/SECURITY_NOTES.md` lists security decisions and limitations.
+- `docs/ROADMAP.md` records planned next steps.
+
+## Current status
+
+This repo has the first starter-kit foundation in place. Local provider testing still needs to be completed with real Stripe test credentials and PayPal sandbox credentials.
 
 ## License
 
-This project is planned to be released under the MIT License.
+MIT License. See `LICENSE`.
