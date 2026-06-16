@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Payment cancelled | Payment Integration Starter Kit</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="panel result-card">
+        <p class="eyebrow">Checkout result</p>
+        <h1>Payment cancelled</h1>
+        <p class="lead">The checkout was closed before payment was completed.</p>
+
+        <ul class="meta-list">
+          <li><span>Provider</span><strong id="provider">Unknown</strong></li>
+          <li><span>Status</span><strong>Cancelled</strong></li>
+        </ul>
+
+        <p class="muted">No success action should run from this page. It exists so the cancel flow is visible and testable.</p>
+        <p><a class="text-link" href="/">Back to checkout</a></p>
+      </section>
+    </main>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      document.querySelector('#provider').textContent = params.get('provider') || 'unknown';
+    </script>
+  </body>
+</html>
