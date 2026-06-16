@@ -1,4 +1,5 @@
 const productId = 'website-deposit';
+
 const statusMessage = document.querySelector('#status-message');
 const stripeButton = document.querySelector('#stripe-button');
 const paypalContainer = document.querySelector('#paypal-button-container');
@@ -24,17 +25,34 @@ function formatPrice(amount, currency) {
   }).format(numericAmount);
 }
 
-async function loadProduct() {
-  const response = await fetch('/api/products/default');
+async function fetchJson(url, options) {
+  const response = await fetch(url, options);
+  const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    throw new Error('Product details could not be loaded.');
+    throw new Error(data.detail || data.error || `Request failed: ${response.status}`);
   }
 
-  const product = await response.json();
+  return data;
+}
+
+async function loadProduct() {
+  const product = await fetchJson('/api/products/default');
 
   productPrice.textContent = formatPrice(product.amount, product.currency);
   productCurrency.textContent = product.currency;
+}
+
+async function loadProviderStatus() {
+  const health = await fetchJson('/api/health');
+  const providerStatus = health.config || {};
+
+  if (!providerStatus.stripeConfigured) {
+    stripeButton.disabled = true;
+    stripeButton.title = 'Add STRIPE_SECRET_KEY to .env to enable Stripe checkout.';
+  }
+
+  return providerStatus;
 }
 
 async function startStripeCheckout() {
@@ -42,7 +60,7 @@ async function startStripeCheckout() {
   stripeButton.disabled = true;
 
   try {
-    const response = await fetch('/api/stripe/create-checkout-session', {
+    const data = await fetchJson('/api/stripe/create-checkout-session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -50,10 +68,8 @@ async function startStripeCheckout() {
       body: JSON.stringify({ productId })
     });
 
-    const data = await response.json();
-
-    if (!response.ok || !data.url) {
-      throw new Error(data.detail || data.error || 'Stripe checkout could not be started.');
+    if (!data.url) {
+      throw new Error('Stripe returned no Checkout URL.');
     }
 
     window.location.href = data.url;
@@ -65,6 +81,13 @@ async function startStripeCheckout() {
 
 function loadScript(src) {
   return new Promise((resolve, reject) => {
+    const existingScript = document.querySelector(`script[src="${src}"]`);
+
+    if (existingScript) {
+      resolve();
+      return;
+    }
+
     const script = document.createElement('script');
     script.src = src;
     script.async = true;
@@ -75,11 +98,10 @@ function loadScript(src) {
 }
 
 async function setupPayPal() {
-  const response = await fetch('/api/paypal/config');
-  const config = await response.json();
+  const config = await fetchJson('/api/paypal/config');
 
-  if (!config.clientId) {
-    paypalContainer.innerHTML = '<p class="provider-note">Add PayPal sandbox credentials to enable this button.</p>';
+  if (!config.configured) {
+    paypalContainer.innerHTML = '<p class="provider-note">Add PayPal sandbox client ID and secret to enable this button.</p>';
     return;
   }
 
@@ -95,7 +117,7 @@ async function setupPayPal() {
     createOrder: async () => {
       setStatus('Creating PayPal order...');
 
-      const orderResponse = await fetch('/api/paypal/create-order', {
+      const order = await fetchJson('/api/paypal/create-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -103,10 +125,8 @@ async function setupPayPal() {
         body: JSON.stringify({ productId })
       });
 
-      const order = await orderResponse.json();
-
-      if (!orderResponse.ok || !order.id) {
-        throw new Error(order.detail || order.error || 'PayPal order could not be created.');
+      if (!order.id) {
+        throw new Error('PayPal returned no order ID.');
       }
 
       return order.id;
@@ -114,15 +134,9 @@ async function setupPayPal() {
     onApprove: async (data) => {
       setStatus('Capturing PayPal order...');
 
-      const captureResponse = await fetch(`/api/paypal/capture-order/${data.orderID}`, {
+      const capture = await fetchJson(`/api/paypal/capture-order/${data.orderID}`, {
         method: 'POST'
       });
-
-      const capture = await captureResponse.json();
-
-      if (!captureResponse.ok) {
-        throw new Error(capture.detail || capture.error || 'PayPal order could not be captured.');
-      }
 
       window.location.href = `/success.html?provider=paypal&order_id=${encodeURIComponent(capture.id)}&status=${encodeURIComponent(capture.status)}`;
     },
@@ -136,19 +150,20 @@ async function setupPayPal() {
 }
 
 async function init() {
-  try {
-    await loadProduct();
-  } catch (error) {
-    setStatus(error.message, 'error');
-  }
-
   stripeButton.addEventListener('click', startStripeCheckout);
 
   try {
+    await loadProduct();
+    await loadProviderStatus();
     await setupPayPal();
-    setStatus('Ready. Use sandbox or test credentials only.');
+
+    if (stripeButton.disabled) {
+      setStatus('Add test and sandbox credentials to enable both providers.');
+    } else {
+      setStatus('Ready. Use test and sandbox credentials only.');
+    }
   } catch (error) {
-    paypalContainer.innerHTML = '<p class="provider-note">PayPal button could not be loaded.</p>';
+    paypalContainer.innerHTML = '<p class="provider-note">Provider setup could not be completed.</p>';
     setStatus(error.message, 'error');
   }
 }
