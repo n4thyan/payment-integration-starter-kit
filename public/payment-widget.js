@@ -9,9 +9,9 @@
     paypalCreateOrderEndpoint: '/api/paypal/create-order',
     paypalCaptureOrderEndpoint: '/api/paypal/capture-order',
     title: 'Checkout',
-    subtitle: 'Choose a payment method to continue.',
+    subtitle: 'Review the deposit and choose a payment method.',
     testMode: true,
-    merchantName: 'Example merchant'
+    merchantName: 'Nathan May Web Projects'
   };
 
   let instanceCount = 0;
@@ -78,7 +78,7 @@
       <section class="piw-widget" aria-label="Payment widget">
         <header class="piw-head">
           <span class="piw-merchant">${options.merchantName}</span>
-          ${options.testMode ? '<span class="piw-mode">Sandbox</span>' : ''}
+          ${options.testMode ? '<span class="piw-mode">Sandbox checkout</span>' : ''}
         </header>
 
         <div class="piw-title-row">
@@ -88,26 +88,41 @@
           </div>
         </div>
 
-        <dl class="piw-summary" aria-live="polite">
-          <div>
-            <dt>Item</dt>
-            <dd data-role="product-name">Loading item</dd>
+        <div class="piw-order" aria-live="polite">
+          <div class="piw-order-line piw-order-line-main">
+            <span>
+              <small>Item</small>
+              <strong data-role="product-name">Loading item</strong>
+            </span>
+            <span class="piw-order-price">
+              <strong data-role="product-price">--</strong>
+              <small data-role="product-currency">GBP</small>
+            </span>
           </div>
-          <div>
-            <dt>Amount</dt>
-            <dd><span data-role="product-price">--</span> <small data-role="product-currency">GBP</small></dd>
+          <p data-role="product-description">Checking checkout setup.</p>
+        </div>
+
+        <div class="piw-methods" aria-label="Payment methods">
+          <div class="piw-method" data-role="stripe-method" data-state="checking">
+            <div class="piw-method-copy">
+              <span class="piw-method-title">Card</span>
+              <span class="piw-method-note" data-role="stripe-note">Checking card checkout.</span>
+            </div>
+            <span class="piw-method-state" data-role="stripe-state">Checking</span>
           </div>
-        </dl>
 
-        <p class="piw-description" data-role="product-description">Checking checkout setup.</p>
-
-        <div class="piw-actions">
-          <button class="piw-stripe-button" data-role="stripe-button" type="button">
-            <span>Pay by card</span>
-            <small>Stripe</small>
+          <button class="piw-stripe-button" data-role="stripe-button" type="button" disabled>
+            Continue to card checkout
           </button>
 
-          <div class="piw-divider"><span>or</span></div>
+          <div class="piw-method" data-role="paypal-method" data-state="checking">
+            <div class="piw-method-copy">
+              <span class="piw-method-title">PayPal</span>
+              <span class="piw-method-note" data-role="paypal-note">Checking PayPal checkout.</span>
+            </div>
+            <span class="piw-method-state" data-role="paypal-state">Checking</span>
+          </div>
+
           <div class="piw-paypal-slot" id="${instanceId}-paypal" data-role="paypal-container"></div>
         </div>
 
@@ -121,6 +136,16 @@
     if (!status) return;
     status.textContent = message;
     status.dataset.type = type;
+  }
+
+  function setMethodState(root, provider, state, note, label) {
+    const method = root.querySelector(`[data-role="${provider}-method"]`);
+    const methodNote = root.querySelector(`[data-role="${provider}-note"]`);
+    const methodState = root.querySelector(`[data-role="${provider}-state"]`);
+
+    if (method) method.dataset.state = state;
+    if (methodNote) methodNote.textContent = note;
+    if (methodState) methodState.textContent = label;
   }
 
   function setProduct(root, product) {
@@ -148,6 +173,7 @@
     async function startStripeCheckout() {
       setStatus(root, 'Starting card checkout.');
       stripeButton.disabled = true;
+      stripeButton.dataset.loading = 'true';
 
       try {
         const data = await fetchJson(joinUrl(options.apiBase, options.stripeEndpoint), {
@@ -166,26 +192,35 @@
       } catch (error) {
         setStatus(root, error.message, 'error');
         stripeButton.disabled = false;
+        delete stripeButton.dataset.loading;
       }
     }
 
     async function setupStripe(providerStatus) {
       if (!providerStatus.stripeConfigured) {
         stripeButton.disabled = true;
-        stripeButton.title = 'Stripe is not enabled.';
-        return;
+        stripeButton.title = 'Card checkout is not enabled.';
+        setMethodState(root, 'stripe', 'disabled', 'Server credentials are missing.', 'Off');
+        return false;
       }
 
+      stripeButton.disabled = false;
       stripeButton.addEventListener('click', startStripeCheckout);
+      setMethodState(root, 'stripe', 'ready', 'Redirects to a Stripe-hosted test checkout.', 'Ready');
+      return true;
     }
 
     async function setupPayPal() {
       const config = await fetchJson(joinUrl(options.apiBase, options.paypalConfigEndpoint));
 
       if (!config.configured) {
-        paypalContainer.innerHTML = '<p class="piw-provider-note">PayPal is not enabled for this checkout.</p>';
+        paypalContainer.hidden = true;
+        setMethodState(root, 'paypal', 'disabled', 'PayPal sandbox is not configured.', 'Off');
         return false;
       }
+
+      setMethodState(root, 'paypal', 'ready', 'Uses the PayPal sandbox button flow.', 'Ready');
+      paypalContainer.hidden = false;
 
       const sdkUrl = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(config.clientId)}&currency=${encodeURIComponent(config.currency)}&components=buttons`;
       await loadScript(sdkUrl);
@@ -241,17 +276,23 @@
       ]);
 
       setProduct(root, product);
-      await setupStripe(health.config || {});
+      const stripeReady = await setupStripe(health.config || {});
       const paypalReady = await setupPayPal();
 
-      if (stripeButton.disabled && !paypalReady) {
-        setStatus(root, 'No payment methods are enabled yet.');
+      if (!stripeReady && !paypalReady) {
+        setStatus(root, 'No payment methods are enabled yet. Add sandbox credentials to test the widget.');
+      } else if (stripeReady && paypalReady) {
+        setStatus(root, 'Card and PayPal sandbox checkout are ready.');
+      } else if (stripeReady) {
+        setStatus(root, 'Card checkout is ready. PayPal is off for this run.');
       } else {
-        setStatus(root, 'Ready for sandbox checkout.');
+        setStatus(root, 'PayPal checkout is ready. Card checkout is off for this run.');
       }
     } catch (error) {
       stripeButton.disabled = true;
-      paypalContainer.innerHTML = '<p class="piw-provider-note">Checkout setup could not be completed.</p>';
+      paypalContainer.hidden = true;
+      setMethodState(root, 'stripe', 'disabled', 'Could not check card checkout.', 'Error');
+      setMethodState(root, 'paypal', 'disabled', 'Could not check PayPal checkout.', 'Error');
       setStatus(root, error.message, 'error');
     }
   }
