@@ -2,6 +2,8 @@
 
 This project uses PayPal sandbox checkout with server-side order creation and capture.
 
+The browser loads the PayPal JavaScript SDK using the sandbox client ID. The backend uses the PayPal client ID and client secret to request an access token, create the order, and capture the order after approval.
+
 ## Local routes
 
 ```text
@@ -32,6 +34,34 @@ PAYPAL_CURRENCY=GBP
 
 The client ID can be used by the browser. The client secret must stay server-side.
 
+## Files involved
+
+```text
+src/routes/paypal.routes.js
+src/services/paypal.service.js
+src/data/products.js
+public/app.js
+```
+
+## Why this structure is used
+
+The PayPal button is a browser component, but the sensitive work happens on the backend. The browser never receives the PayPal client secret.
+
+The frontend creates and captures orders by calling local Express routes instead of calling the PayPal REST API directly.
+
+## What is not included yet
+
+- PayPal webhook verification
+- Server-side order records
+- Detailed funding failure handling
+- Refund flow
+- Live mode deployment notes
+
 ## Important limitation
 
-This first version captures sandbox orders, but it is not a complete production payment system. Live use should include webhook verification, proper order records, logging, and deployment checks.
+This first version captures sandbox orders, but it is not a complete production payment system. Live use should include webhook verification, proper order records, logging, deployment checks, and fulfilment logic that does not rely on the frontend success page alone.
+
+## Official references
+
+- https://developer.paypal.com/docs/checkout/standard/integrate/
+- https://developer.paypal.com/docs/api/orders/v2/
