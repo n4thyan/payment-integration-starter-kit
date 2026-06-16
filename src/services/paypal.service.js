@@ -55,14 +55,7 @@ async function createPayPalOrder(productId) {
             value: formatAmount(product)
           }
         }
-      ],
-      application_context: {
-        brand_name: 'Payment Integration Starter Kit',
-        landing_page: 'LOGIN',
-        user_action: 'PAY_NOW',
-        return_url: `${config.appBaseUrl}/success.html?provider=paypal`,
-        cancel_url: `${config.appBaseUrl}/cancel.html?provider=paypal`
-      }
+      ]
     })
   });
 
