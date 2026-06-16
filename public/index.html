@@ -3,28 +3,29 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Payment Widget Demo</title>
-    <meta name="description" content="Embeddable Stripe and PayPal payment widget for small web projects.">
+    <title>Website Deposit Checkout</title>
+    <meta name="description" content="Example page showing an embeddable Stripe and PayPal payment widget.">
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
-    <main class="demo-shell">
-      <section class="demo-copy" aria-labelledby="demo-title">
-        <p class="demo-kicker">Reusable payment component</p>
-        <h1 id="demo-title">Payment widget starter kit</h1>
-        <p class="demo-lead">A small payment widget that can sit inside another page instead of taking over the whole layout.</p>
-      </section>
+    <main class="page-wrap">
+      <section class="service-page" aria-labelledby="page-title">
+        <p class="eyebrow">Example service checkout</p>
+        <h1 id="page-title">Starter website deposit</h1>
+        <p class="lead">This page is only a host. The payment area on the right is the reusable widget.</p>
 
-      <section class="demo-preview" aria-label="Payment widget preview">
-        <div class="merchant-panel">
-          <div class="merchant-header">
-            <span>Example service page</span>
-            <strong>Starter Website Deposit</strong>
-          </div>
+        <div class="service-copy">
+          <h2>What the deposit covers</h2>
+          <p>A one-off starter payment used here to test the Stripe and PayPal checkout flow. In a real project this section could be replaced with a quote, booking summary, invoice, or order details.</p>
 
-          <div id="payment-widget"></div>
+          <h2>Integration note</h2>
+          <p>The widget calls server-side endpoints for payment creation. The frontend does not store provider secret keys.</p>
         </div>
       </section>
+
+      <aside class="checkout-column" aria-label="Checkout">
+        <div id="payment-widget"></div>
+      </aside>
     </main>
 
     <script src="/payment-widget.js"></script>
