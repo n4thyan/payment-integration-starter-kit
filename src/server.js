@@ -18,6 +18,11 @@ app.use('/api/stripe', stripeRoutes);
 app.use('/api/paypal', paypalRoutes);
 
 app.use((req, res) => {
+  if (req.accepts('html')) {
+    res.status(404).sendFile(path.join(publicPath, 'error.html'));
+    return;
+  }
+
   res.status(404).json({
     error: 'Route not found.',
     path: req.originalUrl
