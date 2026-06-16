@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.0
+
+Widget-focused frontend refactor.
+
+- Added `public/payment-widget.js` as the reusable checkout component.
+- Converted `public/index.html` into a lightweight host page for the widget.
+- Reduced `public/app.js` to a small widget mount example.
+- Reworked frontend styles around scoped `.piw-*` widget classes.
+- Added `docs/WIDGET_USAGE.md` with embed instructions and widget options.
+- Updated README to describe the project as an embeddable payment widget rather than a full checkout page.
+
 ## 0.1.0
 
 Initial starter-kit foundation.
