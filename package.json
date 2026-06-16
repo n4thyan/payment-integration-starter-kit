@@ -1,13 +1,13 @@
 {
   "name": "payment-integration-starter-kit",
-  "version": "0.1.0",
-  "description": "Reusable Stripe and PayPal checkout flows for small web projects.",
+  "version": "0.2.0",
+  "description": "Embeddable Stripe and PayPal checkout widget for small web projects.",
   "main": "src/server.js",
   "type": "commonjs",
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "check": "node --check src/server.js && node --check src/config/env.js && node --check src/data/products.js && node --check src/routes/health.routes.js && node --check src/routes/products.routes.js && node --check src/routes/stripe.routes.js && node --check src/routes/paypal.routes.js && node --check src/services/stripe.service.js && node --check src/services/paypal.service.js"
+    "check": "node --check src/server.js && node --check src/config/env.js && node --check src/data/products.js && node --check src/routes/health.routes.js && node --check src/routes/products.routes.js && node --check src/routes/stripe.routes.js && node --check src/routes/paypal.routes.js && node --check src/services/stripe.service.js && node --check src/services/paypal.service.js && node --check public/payment-widget.js && node --check public/app.js"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -19,6 +19,7 @@
     "paypal",
     "checkout",
     "payments",
+    "widget",
     "starter-kit"
   ],
   "author": "Nathan May",
