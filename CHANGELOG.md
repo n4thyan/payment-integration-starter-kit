@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.1
+
+Checkout widget interaction polish.
+
+- Reworked the widget payment area into method rows with live Ready, Off, and Error states.
+- Added clearer card checkout loading behaviour.
+- Removed the static divider/disabled-message layout that made the widget feel like a flat mockup.
+- Tuned the demo copy so the host page feels less like a generated landing page.
+
 ## 0.2.0
 
 Widget-focused frontend refactor.
