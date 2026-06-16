@@ -1,0 +1,30 @@
+{
+  "name": "payment-integration-starter-kit",
+  "version": "0.1.0",
+  "description": "Reusable Stripe and PayPal checkout flows for small web projects.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "check": "node --check src/server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "stripe",
+    "paypal",
+    "checkout",
+    "payments",
+    "starter-kit"
+  ],
+  "author": "Nathan May",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "stripe": "^17.7.0"
+  }
+}
