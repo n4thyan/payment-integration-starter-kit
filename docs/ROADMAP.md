@@ -4,23 +4,30 @@
 
 Core starter-kit foundation.
 
+Status: scaffolded, not locally provider-tested yet.
+
 - Express server
 - Static checkout page
 - Example product configuration
 - Stripe Checkout Session route
 - PayPal order create route
 - PayPal order capture route
-- Success and cancel pages
+- Success, cancel, and frontend error pages
 - Environment variable setup
-- Setup, testing, security, and AI usage documentation
+- Setup, testing, security, provider, roadmap, changelog, and AI usage documentation
 
 ## Version 0.2
 
 Testing and polish.
 
+- Run `npm install`
+- Run `npm run check`
+- Run local server
+- Test Stripe with a real test secret key
+- Test PayPal with real sandbox REST app credentials
+- Record completed Stripe test flow in `docs/TESTING.md`
+- Record completed PayPal sandbox flow in `docs/TESTING.md`
 - Add screenshots
-- Record completed Stripe test flow
-- Record completed PayPal sandbox flow
 - Improve frontend error states after real local testing
 - Add a short case study summary for portfolio use
 
@@ -29,10 +36,20 @@ Testing and polish.
 Production-awareness improvements.
 
 - Stripe webhook example
+- Stripe webhook signature verification notes
 - PayPal webhook notes or example
+- Server-side order record example
 - Safer fulfilment notes
-- Optional server-side order record example
 - Deployment notes for a small hosted demo
+
+## Version 0.4
+
+Adaptation examples.
+
+- Digital product example
+- Service deposit example
+- One-off invoice-style payment example
+- Notes on adapting product data
 
 ## Separate future project
 
