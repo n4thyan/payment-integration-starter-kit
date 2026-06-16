@@ -20,6 +20,7 @@ async function createCheckoutSession(productId) {
 
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',
+    client_reference_id: product.id,
     line_items: [
       {
         price_data: {
@@ -36,7 +37,8 @@ async function createCheckoutSession(productId) {
     success_url: `${config.appBaseUrl}/success.html?provider=stripe&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${config.appBaseUrl}/cancel.html?provider=stripe`,
     metadata: {
-      product_id: product.id
+      product_id: product.id,
+      integration: 'payment-integration-starter-kit'
     }
   });
 
