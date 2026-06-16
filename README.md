@@ -55,7 +55,9 @@ payment-integration-starter-kit/
 │   └── server.js
 ├── docs/
 │   ├── AI_USAGE.md
+│   ├── CASE_STUDY_DRAFT.md
 │   ├── PAYPAL.md
+│   ├── PROVIDER_REFERENCES.md
 │   ├── ROADMAP.md
 │   ├── SECURITY_NOTES.md
 │   ├── SETUP.md
@@ -64,6 +66,8 @@ payment-integration-starter-kit/
 ├── screenshots/
 ├── .env.example
 ├── .gitignore
+├── .nvmrc
+├── CHANGELOG.md
 ├── LICENSE
 ├── package.json
 └── README.md
@@ -103,6 +107,12 @@ Copy-Item .env.example .env
 ```
 
 Edit `.env` with your own Stripe test key and PayPal sandbox credentials.
+
+Run a backend syntax check:
+
+```bash
+npm run check
+```
 
 Run the server:
 
@@ -177,7 +187,10 @@ See `docs/AI_USAGE.md` for the project-specific notes.
 - `docs/PAYPAL.md` explains the PayPal flow.
 - `docs/TESTING.md` is the manual testing checklist.
 - `docs/SECURITY_NOTES.md` lists security decisions and limitations.
+- `docs/PROVIDER_REFERENCES.md` keeps official docs links in one place.
+- `docs/CASE_STUDY_DRAFT.md` is a draft portfolio case study.
 - `docs/ROADMAP.md` records planned next steps.
+- `CHANGELOG.md` records project changes.
 
 ## Current status
 
