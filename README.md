@@ -18,6 +18,7 @@ The current version is test and sandbox focused. It is not a complete production
 - Manual testing notes
 - Security notes
 - AI-assisted development notes
+- GitHub Actions syntax check
 
 ## Tech stack
 
@@ -32,6 +33,9 @@ The current version is test and sandbox focused. It is not a complete production
 
 ```text
 payment-integration-starter-kit/
+├── .github/
+│   └── workflows/
+│       └── check.yml
 ├── public/
 │   ├── index.html
 │   ├── success.html
