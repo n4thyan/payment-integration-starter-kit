@@ -10,8 +10,11 @@ Initial starter-kit foundation.
 - Added PayPal order create/capture routes and service.
 - Added provider configuration status endpoint.
 - Added success, cancel, and frontend error pages.
-- Added setup, testing, security, provider, roadmap, and AI usage documentation.
-- Added `.env.example`, `.gitignore`, and MIT license.
+- Added setup, testing, security, provider, roadmap, changelog, and AI usage documentation.
+- Added provider reference notes using official Stripe and PayPal documentation links.
+- Added a draft portfolio case study note.
+- Added `.env.example`, `.gitignore`, `.nvmrc`, and MIT license.
+- Added GitHub Actions syntax check workflow.
 
 ## Next
 
