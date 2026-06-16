@@ -8,7 +8,7 @@
     paypalConfigEndpoint: '/api/paypal/config',
     paypalCreateOrderEndpoint: '/api/paypal/create-order',
     paypalCaptureOrderEndpoint: '/api/paypal/capture-order',
-    title: 'Secure checkout',
+    title: 'Checkout',
     subtitle: 'Choose a payment method to continue.',
     testMode: true,
     merchantName: 'Example merchant'
@@ -76,40 +76,42 @@
   function renderShell(options, instanceId) {
     return `
       <section class="piw-widget" aria-label="Payment widget">
-        <div class="piw-header">
+        <header class="piw-head">
+          <span class="piw-merchant">${options.merchantName}</span>
+          ${options.testMode ? '<span class="piw-mode">Sandbox</span>' : ''}
+        </header>
+
+        <div class="piw-title-row">
           <div>
-            <p class="piw-kicker">${options.merchantName}</p>
             <h2>${options.title}</h2>
             <p>${options.subtitle}</p>
           </div>
-          ${options.testMode ? '<span class="piw-badge">Test mode</span>' : ''}
         </div>
 
-        <div class="piw-product" aria-live="polite">
+        <dl class="piw-summary" aria-live="polite">
           <div>
-            <p class="piw-label">Item</p>
-            <strong class="piw-product-name" data-role="product-name">Loading item</strong>
-            <span class="piw-product-description" data-role="product-description">Checking checkout setup.</span>
+            <dt>Item</dt>
+            <dd data-role="product-name">Loading item</dd>
           </div>
-          <div class="piw-price">
-            <strong data-role="product-price">--</strong>
-            <span data-role="product-currency">GBP</span>
+          <div>
+            <dt>Amount</dt>
+            <dd><span data-role="product-price">--</span> <small data-role="product-currency">GBP</small></dd>
           </div>
-        </div>
+        </dl>
 
-        <div class="piw-methods">
+        <p class="piw-description" data-role="product-description">Checking checkout setup.</p>
+
+        <div class="piw-actions">
           <button class="piw-stripe-button" data-role="stripe-button" type="button">
             <span>Pay by card</span>
-            <small>Stripe Checkout</small>
+            <small>Stripe</small>
           </button>
 
           <div class="piw-divider"><span>or</span></div>
-
           <div class="piw-paypal-slot" id="${instanceId}-paypal" data-role="paypal-container"></div>
         </div>
 
         <p class="piw-status" data-role="status" role="status">Loading checkout options.</p>
-        <p class="piw-footnote">This component calls server-side checkout endpoints and can be embedded into another page.</p>
       </section>
     `;
   }
@@ -170,7 +172,7 @@
     async function setupStripe(providerStatus) {
       if (!providerStatus.stripeConfigured) {
         stripeButton.disabled = true;
-        stripeButton.title = 'Enable Stripe in the server configuration.';
+        stripeButton.title = 'Stripe is not enabled.';
         return;
       }
 
@@ -181,7 +183,7 @@
       const config = await fetchJson(joinUrl(options.apiBase, options.paypalConfigEndpoint));
 
       if (!config.configured) {
-        paypalContainer.innerHTML = '<p class="piw-provider-note">Enable PayPal in the server configuration.</p>';
+        paypalContainer.innerHTML = '<p class="piw-provider-note">PayPal is not enabled for this checkout.</p>';
         return false;
       }
 
@@ -193,7 +195,7 @@
           layout: 'vertical',
           shape: 'rect',
           label: 'paypal',
-          height: 48
+          height: 44
         },
         createOrder: async () => {
           setStatus(root, 'Creating PayPal order.');
@@ -243,9 +245,9 @@
       const paypalReady = await setupPayPal();
 
       if (stripeButton.disabled && !paypalReady) {
-        setStatus(root, 'Enable one or more providers to test the widget.');
+        setStatus(root, 'No payment methods are enabled yet.');
       } else {
-        setStatus(root, 'Ready for test or sandbox checkout.');
+        setStatus(root, 'Ready for sandbox checkout.');
       }
     } catch (error) {
       stripeButton.disabled = true;
