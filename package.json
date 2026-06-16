@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "description": "Reusable Stripe and PayPal checkout flows for small web projects.",
   "main": "src/server.js",
+  "type": "commonjs",
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "check": "node --check src/server.js"
+    "check": "node --check src/server.js && node --check src/config/env.js && node --check src/data/products.js && node --check src/routes/health.routes.js && node --check src/routes/products.routes.js && node --check src/routes/stripe.routes.js && node --check src/routes/paypal.routes.js && node --check src/services/stripe.service.js && node --check src/services/paypal.service.js"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -22,6 +23,14 @@
   ],
   "author": "Nathan May",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/n4thyan/payment-integration-starter-kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/n4thyan/payment-integration-starter-kit/issues"
+  },
+  "homepage": "https://github.com/n4thyan/payment-integration-starter-kit#readme",
   "dependencies": {
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
