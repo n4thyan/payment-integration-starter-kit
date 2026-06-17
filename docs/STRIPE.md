@@ -10,7 +10,7 @@ The backend creates the Checkout Session using the Stripe secret key. The browse
 POST /api/stripe/create-checkout-session
 ```
 
-The frontend calls this route when the Stripe button is clicked.
+The frontend widget calls this route when the Stripe button is clicked.
 
 ## Server flow
 
@@ -36,12 +36,19 @@ The secret key must stay server-side.
 src/routes/stripe.routes.js
 src/services/stripe.service.js
 src/data/products.js
+public/payment-widget.js
 public/app.js
 ```
 
 ## Why this structure is used
 
 The frontend does not create a Stripe Checkout Session directly. It asks the backend to create one. This keeps the Stripe secret key out of the browser and makes the payment flow easier to adapt later.
+
+Stripe Checkout also avoids handling card details directly inside this starter kit.
+
+## Current scope
+
+This route is built for test-mode validation. It should be tested locally with a Stripe test secret key before being presented as a completed provider flow.
 
 ## What is not included yet
 
