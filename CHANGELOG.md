@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.2
+
+Public-facing documentation polish.
+
+- Reworked the README so the repo presents as a practical sandbox starter kit with a clear validation status.
+- Clarified the difference between built starter-kit foundations, pending provider validation, and production readiness.
+- Updated widget usage docs so default option values match the actual widget code.
+- Reframed testing notes as a manual validation checklist.
+- Updated the roadmap around staged validation and production-awareness work.
+- Aligned `package.json` version with the existing 0.2.x changelog line.
+
 ## 0.2.1
 
 Checkout widget interaction polish.
@@ -40,6 +51,7 @@ Initial starter-kit foundation.
 
 - Run local testing with real Stripe test credentials.
 - Run local testing with PayPal sandbox credentials.
+- Record validation results in `docs/TESTING.md`.
 - Add screenshots after browser testing.
 - Improve frontend error states based on real provider responses.
 - Add webhook examples in a later version.
