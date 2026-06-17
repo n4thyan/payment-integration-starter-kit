@@ -9,7 +9,7 @@ Public-facing documentation polish.
 - Updated widget usage docs so default option values match the actual widget code.
 - Reframed testing notes as a manual validation checklist.
 - Updated the roadmap around staged validation and production-awareness work.
-- Aligned `package.json` version with the existing 0.2.x changelog line.
+- Bumped package metadata to `0.2.2`.
 
 ## 0.2.1
 
