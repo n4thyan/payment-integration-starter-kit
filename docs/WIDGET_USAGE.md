@@ -1,14 +1,14 @@
 # Widget Usage
 
-The frontend is now built around an embeddable payment widget rather than a full checkout page.
+The frontend is built around an embeddable payment widget rather than a full checkout page.
 
-The demo page at `public/index.html` is only a host page. The reusable component lives in:
+The demo page at `public/index.html` is a host page. The reusable component lives in:
 
 ```text
 public/payment-widget.js
 ```
 
-The widget renders its own product summary, card checkout button, PayPal button slot, loading state, provider status, and test-mode note.
+The widget renders its own product summary, provider status, Stripe checkout action, PayPal button slot, loading state, error state, and test-mode note.
 
 ## Basic embed
 
@@ -49,11 +49,19 @@ Mount the widget:
 | `healthEndpoint` | Endpoint used to check provider availability. | `/api/health` |
 | `paypalConfigEndpoint` | Endpoint used to load the PayPal client-side config. | `/api/paypal/config` |
 | `paypalCreateOrderEndpoint` | Endpoint used to create a PayPal order. | `/api/paypal/create-order` |
-| `paypalCaptureOrderEndpoint` | Endpoint used to capture a PayPal order. | `/api/paypal/capture-order` |
-| `title` | Main widget heading. | `Secure checkout` |
-| `subtitle` | Short helper text below the heading. | `Choose a payment method to continue.` |
+| `paypalCaptureOrderEndpoint` | Endpoint base used to capture a PayPal order. The order ID is appended by the widget. | `/api/paypal/capture-order` |
+| `title` | Main widget heading. | `Checkout` |
+| `subtitle` | Short helper text below the heading. | `Review the deposit and choose a payment method.` |
 | `testMode` | Shows or hides the test-mode badge. | `true` |
-| `merchantName` | Small merchant label in the widget header. | `Example merchant` |
+| `merchantName` | Small merchant label in the widget header. | `Nathan May Web Projects` |
+
+## Provider behaviour
+
+The widget checks `/api/health` before rendering payment actions.
+
+- Stripe is shown as ready when the backend has a Stripe test secret key configured.
+- PayPal is shown as ready when the backend has both sandbox values configured.
+- Missing providers are shown as unavailable instead of silently failing.
 
 ## Styling
 
@@ -61,8 +69,8 @@ The widget uses `.piw-*` class names to keep its styles separate from the host p
 
 The current stylesheet is still part of the demo app, but the class naming is designed so the widget can later be moved into a standalone CSS file if needed.
 
-## Current limitations
+## Current scope
 
-This is still a starter kit, not a production payment package.
+This is a starter kit for test-mode and sandbox payment flow development. It is not a production payment package.
 
-Before live use, it would need webhook verification, order records, better validation, rate limiting, deployment hardening, and a proper fulfilment flow.
+Before live use, it would need webhook verification, order records, stricter request validation, rate limiting, deployment hardening, safe logging, and a proper fulfilment flow.
