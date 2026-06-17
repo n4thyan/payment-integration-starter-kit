@@ -1,17 +1,21 @@
 # Testing Notes
 
-Use this file as the manual test record for the project.
+This file records manual validation for the starter kit.
 
-Do not mark the project as portfolio-ready until the provider flows have been tested locally with real test/sandbox credentials.
+Current validation status: **provider validation pending**.
 
-## Local setup
+The project should stay in test-mode and sandbox scope until the Stripe and PayPal flows have been run locally with real test credentials.
 
-- Operating system:
-- Node version:
-- npm version:
-- Date tested:
+## Local setup record
 
-## Install and syntax test
+| Field | Value |
+| --- | --- |
+| Operating system | Not recorded yet |
+| Node version | Not recorded yet |
+| npm version | Not recorded yet |
+| Date tested | Not recorded yet |
+
+## Install and syntax check
 
 Commands:
 
@@ -24,6 +28,7 @@ Expected result:
 
 - Dependencies install without errors
 - Backend JavaScript syntax check passes
+- Frontend widget JavaScript syntax check passes
 
 Result:
 
@@ -33,7 +38,7 @@ Result:
 Notes:
 
 ```text
-Add notes here.
+Add notes here after local testing.
 ```
 
 ## Server startup test
@@ -59,10 +64,10 @@ Result:
 Notes:
 
 ```text
-Add notes here.
+Add notes here after local testing.
 ```
 
-## Stripe test
+## Stripe test-mode validation
 
 Before testing:
 
@@ -88,10 +93,10 @@ Result:
 Notes:
 
 ```text
-Add notes here.
+Add notes here after local testing.
 ```
 
-## PayPal sandbox test
+## PayPal sandbox validation
 
 Before testing:
 
@@ -118,7 +123,7 @@ Result:
 Notes:
 
 ```text
-Add notes here.
+Add notes here after local testing.
 ```
 
 ## Security checks
@@ -132,15 +137,11 @@ Add notes here.
 
 ## Known issues
 
-Add issues here during real local testing.
-
 ```text
-None recorded yet.
+No local provider issues recorded yet.
 ```
 
 ## Fixes made after testing
-
-Record any fixes made after local testing.
 
 ```text
 No local provider testing has been recorded yet.
