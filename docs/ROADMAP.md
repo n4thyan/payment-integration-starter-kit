@@ -4,10 +4,10 @@
 
 Core starter-kit foundation.
 
-Status: scaffolded, not locally provider-tested yet.
+Status: complete.
 
 - Express server
-- Static checkout page
+- Static frontend host page
 - Example product configuration
 - Stripe Checkout Session route
 - PayPal order create route
@@ -18,38 +18,61 @@ Status: scaffolded, not locally provider-tested yet.
 
 ## Version 0.2
 
-Testing and polish.
+Embeddable widget and public documentation polish.
+
+Status: complete.
+
+- Add `public/payment-widget.js` as the reusable checkout component
+- Convert `public/index.html` into a lightweight host page for the widget
+- Keep provider logic separated between routes and services
+- Rework frontend styles around scoped `.piw-*` widget classes
+- Add widget usage documentation
+- Tune README and docs so the repo reads as a practical starter kit
+- Keep the project clearly scoped to test-mode and sandbox development
+
+## Version 0.3
+
+Local provider validation.
+
+Status: next.
 
 - Run `npm install`
 - Run `npm run check`
-- Run local server
+- Run the local server
 - Test Stripe with a real test secret key
 - Test PayPal with real sandbox REST app credentials
 - Record completed Stripe test flow in `docs/TESTING.md`
 - Record completed PayPal sandbox flow in `docs/TESTING.md`
-- Add screenshots
-- Improve frontend error states after real local testing
-- Add a short case study summary for portfolio use
+- Add screenshots after successful browser testing
+- Improve frontend error states based on real provider responses
+- Update the portfolio case study summary with tested results
 
-## Version 0.3
+## Version 0.4
 
 Production-awareness improvements.
+
+Status: planned.
 
 - Stripe webhook example
 - Stripe webhook signature verification notes
 - PayPal webhook notes or example
 - Server-side order record example
 - Safer fulfilment notes
+- Request validation improvements
+- Rate limiting notes
 - Deployment notes for a small hosted demo
 
-## Version 0.4
+## Version 0.5
 
 Adaptation examples.
+
+Status: planned.
 
 - Digital product example
 - Service deposit example
 - One-off invoice-style payment example
 - Notes on adapting product data
+- Notes on embedding the widget into an existing small-business page
 
 ## Separate future project
 
