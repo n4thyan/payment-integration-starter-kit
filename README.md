@@ -1,22 +1,45 @@
 # Payment Integration Starter Kit
 
-Reusable Stripe and PayPal checkout widget for small web projects.
+Reusable Node.js payment starter kit for adding Stripe Checkout and PayPal sandbox checkout to small web projects.
 
-This project is a Node.js and Express starter kit for adding a compact payment component to service pages, product pages, booking flows, and small business websites. The frontend is designed as an embeddable widget rather than a full standalone checkout page.
+This repo is built as a practical, readable starter kit rather than a fake production payment platform. It shows how to separate provider logic, keep secrets on the backend, expose a small frontend checkout widget, and document the checks that need to happen before live payment use.
 
-The current version is test and sandbox focused. It is not a complete production payment system. Live payment use needs webhook verification, order records, deployment checks, logging, and a proper fulfilment process.
+## Current status
+
+| Area | Status |
+| --- | --- |
+| Embeddable frontend widget | Built |
+| Express backend routes | Built |
+| Stripe Checkout Session flow | Built, pending local provider validation |
+| PayPal order create and capture flow | Built, pending local sandbox validation |
+| Documentation | Public-facing starter docs in place |
+| Live payment readiness | Not production-certified |
+
+The project is currently intended for **test mode and sandbox development**. Live payment use needs webhook verification, server-side order records, deployment checks, logging, rate limiting, and a fulfilment flow that does not rely on the frontend success page.
+
+## Why this repo exists
+
+This project is designed to be useful in real small-project scenarios, including:
+
+- Service deposit pages
+- Small business booking forms
+- Digital product payment prototypes
+- Reusable checkout widget experiments
+- Portfolio examples showing payment flow structure
+
+It is intentionally small enough to read and adapt, while still separating the parts that matter: frontend widget code, provider routes, provider services, product data, environment configuration, testing notes, and security notes.
 
 ## What it includes
 
 - Embeddable payment widget
-- Stripe Checkout Session flow
-- PayPal order create and capture flow
+- Stripe Checkout Session route
+- PayPal sandbox order create and capture routes
 - Separate route and service files for each provider
 - Example product configuration
-- Success and cancel pages
+- Success, cancel, and frontend error pages
 - Environment variable based configuration
-- Manual testing notes
-- Security notes
+- Manual validation checklist
+- Security notes and limitations
 - AI-assisted development notes
 - GitHub Actions syntax check
 
@@ -113,7 +136,7 @@ Stripe uses a server-created Checkout Session. PayPal uses the JavaScript SDK on
 
 See `docs/WIDGET_USAGE.md` for all widget options.
 
-## Local setup
+## Quick start
 
 Install dependencies:
 
@@ -199,30 +222,29 @@ Before live use, the project would need at minimum:
 - Safe logging
 - A real fulfilment flow
 
-## AI-assisted development
-
-AI was used as a development assistant for planning, structure, debugging checks, and documentation wording.
-
-The aim is not to hide AI use. The aim is to show a practical workflow where generated suggestions are reviewed, edited, tested, and documented before they are treated as finished.
-
-See `docs/AI_USAGE.md` for the project-specific notes.
-
 ## Documentation
 
-- `docs/WIDGET_USAGE.md` explains how to embed and configure the widget.
 - `docs/SETUP.md` explains local setup.
+- `docs/WIDGET_USAGE.md` explains how to embed and configure the widget.
 - `docs/STRIPE.md` explains the Stripe flow.
 - `docs/PAYPAL.md` explains the PayPal flow.
-- `docs/TESTING.md` is the manual testing checklist.
+- `docs/TESTING.md` is the manual validation checklist.
 - `docs/SECURITY_NOTES.md` lists security decisions and limitations.
 - `docs/PROVIDER_REFERENCES.md` keeps official docs links in one place.
 - `docs/CASE_STUDY_DRAFT.md` is a draft portfolio case study.
+- `docs/AI_USAGE.md` explains how AI was used during development.
 - `docs/ROADMAP.md` records planned next steps.
 - `CHANGELOG.md` records project changes.
 
-## Current status
+## AI-assisted development
 
-The repo now has the first embeddable widget foundation in place. Local provider testing still needs to be completed with real Stripe test credentials and PayPal sandbox credentials.
+AI was used as a development assistant for planning, structure, documentation, and review. The code and documentation are intended to be read, tested, and edited before being treated as finished.
+
+The repo keeps AI usage visible because the aim is to show a practical workflow: use AI to move faster, then validate the result properly.
+
+## Next validation step
+
+The next step is to run the starter kit locally with real Stripe test credentials and PayPal sandbox credentials, then record the results in `docs/TESTING.md`.
 
 ## License
 
