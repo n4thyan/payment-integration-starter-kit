@@ -5,6 +5,7 @@ const healthRoutes = require('./routes/health.routes');
 const productRoutes = require('./routes/products.routes');
 const stripeRoutes = require('./routes/stripe.routes');
 const paypalRoutes = require('./routes/paypal.routes');
+const demoRoutes = require('./routes/demo.routes');
 
 const app = express();
 const publicPath = path.join(__dirname, '..', 'public');
@@ -16,6 +17,7 @@ app.use('/api/health', healthRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/stripe', stripeRoutes);
 app.use('/api/paypal', paypalRoutes);
+app.use('/api/demo', demoRoutes);
 
 app.use((req, res) => {
   if (req.accepts('html')) {
