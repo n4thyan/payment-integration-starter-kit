@@ -4,6 +4,7 @@
     productId: 'website-deposit',
     productEndpoint: '/api/products/default',
     stripeEndpoint: '/api/stripe/create-checkout-session',
+    demoEndpoint: '/api/demo/complete-checkout',
     healthEndpoint: '/api/health',
     paypalConfigEndpoint: '/api/paypal/config',
     paypalCreateOrderEndpoint: '/api/paypal/create-order',
@@ -124,6 +125,18 @@
           </div>
 
           <div class="piw-paypal-slot" id="${instanceId}-paypal" data-role="paypal-container"></div>
+
+          <div class="piw-method" data-role="demo-method" data-state="checking">
+            <div class="piw-method-copy">
+              <span class="piw-method-title">Demo checkout</span>
+              <span class="piw-method-note" data-role="demo-note">Checking local demo flow.</span>
+            </div>
+            <span class="piw-method-state" data-role="demo-state">Checking</span>
+          </div>
+
+          <button class="piw-demo-button" data-role="demo-button" type="button" disabled>
+            Run local demo checkout
+          </button>
         </div>
 
         <p class="piw-status" data-role="status" role="status">Loading checkout options.</p>
@@ -168,6 +181,7 @@
     host.innerHTML = renderShell(options, instanceId);
     const root = host.querySelector('.piw-widget');
     const stripeButton = root.querySelector('[data-role="stripe-button"]');
+    const demoButton = root.querySelector('[data-role="demo-button"]');
     const paypalContainer = root.querySelector('[data-role="paypal-container"]');
 
     async function startStripeCheckout() {
@@ -196,6 +210,32 @@
       }
     }
 
+    async function startDemoCheckout() {
+      setStatus(root, 'Running local demo checkout.');
+      demoButton.disabled = true;
+      demoButton.dataset.loading = 'true';
+
+      try {
+        const data = await fetchJson(joinUrl(options.apiBase, options.demoEndpoint), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ productId: options.productId })
+        });
+
+        if (!data.url) {
+          throw new Error('Demo checkout returned no redirect URL.');
+        }
+
+        window.location.href = data.url;
+      } catch (error) {
+        setStatus(root, error.message, 'error');
+        demoButton.disabled = false;
+        delete demoButton.dataset.loading;
+      }
+    }
+
     async function setupStripe(providerStatus) {
       if (!providerStatus.stripeConfigured) {
         stripeButton.disabled = true;
@@ -207,6 +247,20 @@
       stripeButton.disabled = false;
       stripeButton.addEventListener('click', startStripeCheckout);
       setMethodState(root, 'stripe', 'ready', 'Redirects to a Stripe-hosted test checkout.', 'Ready');
+      return true;
+    }
+
+    async function setupDemo(providerStatus) {
+      if (!providerStatus.demoConfigured) {
+        demoButton.disabled = true;
+        demoButton.title = 'Demo checkout is disabled.';
+        setMethodState(root, 'demo', 'disabled', 'Local demo mode is disabled.', 'Off');
+        return false;
+      }
+
+      demoButton.disabled = false;
+      demoButton.addEventListener('click', startDemoCheckout);
+      setMethodState(root, 'demo', 'ready', 'Simulates a successful checkout without external accounts.', 'Ready');
       return true;
     }
 
@@ -276,23 +330,31 @@
       ]);
 
       setProduct(root, product);
-      const stripeReady = await setupStripe(health.config || {});
+      const providerStatus = health.config || {};
+      const stripeReady = await setupStripe(providerStatus);
       const paypalReady = await setupPayPal();
+      const demoReady = await setupDemo(providerStatus);
 
-      if (!stripeReady && !paypalReady) {
-        setStatus(root, 'No payment methods are enabled yet. Add sandbox credentials to test the widget.');
+      if (!stripeReady && !paypalReady && !demoReady) {
+        setStatus(root, 'No payment methods are enabled yet. Add sandbox credentials or enable demo checkout.');
+      } else if (demoReady && !stripeReady && !paypalReady) {
+        setStatus(root, 'Demo checkout is ready. Stripe and PayPal are off for this run.');
       } else if (stripeReady && paypalReady) {
-        setStatus(root, 'Card and PayPal sandbox checkout are ready.');
+        setStatus(root, demoReady ? 'Card, PayPal, and demo checkout are ready.' : 'Card and PayPal sandbox checkout are ready.');
       } else if (stripeReady) {
-        setStatus(root, 'Card checkout is ready. PayPal is off for this run.');
+        setStatus(root, demoReady ? 'Card and demo checkout are ready. PayPal is off for this run.' : 'Card checkout is ready. PayPal is off for this run.');
+      } else if (paypalReady) {
+        setStatus(root, demoReady ? 'PayPal and demo checkout are ready. Card checkout is off for this run.' : 'PayPal checkout is ready. Card checkout is off for this run.');
       } else {
-        setStatus(root, 'PayPal checkout is ready. Card checkout is off for this run.');
+        setStatus(root, 'Demo checkout is ready. External provider checkout is off for this run.');
       }
     } catch (error) {
       stripeButton.disabled = true;
+      demoButton.disabled = true;
       paypalContainer.hidden = true;
       setMethodState(root, 'stripe', 'disabled', 'Could not check card checkout.', 'Error');
       setMethodState(root, 'paypal', 'disabled', 'Could not check PayPal checkout.', 'Error');
+      setMethodState(root, 'demo', 'disabled', 'Could not check demo checkout.', 'Error');
       setStatus(root, error.message, 'error');
     }
   }
