@@ -1,6 +1,7 @@
 const path = require('path');
 const dotenv = require('dotenv');
 
+
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 function toInteger(value, fallback) {
@@ -14,6 +15,9 @@ const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   port,
   appBaseUrl: process.env.APP_BASE_URL || `http://localhost:${port}`,
+  demo: {
+    enabled: process.env.DEMO_CHECKOUT_ENABLED !== 'false'
+  },
   stripe: {
     secretKey: process.env.STRIPE_SECRET_KEY || '',
     currency: (process.env.STRIPE_CURRENCY || 'gbp').toLowerCase()
@@ -45,6 +49,7 @@ function assertProviderConfigured(provider) {
 
 function getPublicConfigStatus() {
   return {
+    demoConfigured: config.demo.enabled,
     stripeConfigured: !isPlaceholder(config.stripe.secretKey),
     paypalConfigured: !isPlaceholder(config.paypal.clientId) && !isPlaceholder(config.paypal.clientSecret),
     paypalClientIdAvailable: !isPlaceholder(config.paypal.clientId),
