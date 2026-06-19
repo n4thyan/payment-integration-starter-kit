@@ -1,21 +1,22 @@
 # Payment Integration Starter Kit
 
-Reusable Node.js payment starter kit for adding Stripe Checkout and PayPal sandbox checkout to small web projects.
+Reusable Node.js payment starter kit for adding Stripe Checkout, PayPal sandbox checkout, and a local demo checkout flow to small web projects.
 
-This repo is built as a practical, readable starter kit rather than a fake production payment platform. It shows how to separate provider logic, keep secrets on the backend, expose a small frontend checkout widget, and document the checks that need to happen before live payment use.
+This repo is built as a practical, readable starter kit rather than a fake production payment platform. It shows how to separate provider logic, keep secrets on the backend, expose a small frontend checkout widget, handle missing provider credentials safely, and document the checks that need to happen before live payment use.
 
 ## Current status
 
 | Area | Status |
 | --- | --- |
-| Embeddable frontend widget | Built |
+| Embeddable frontend widget | Built and locally browser-tested |
 | Express backend routes | Built |
-| Stripe Checkout Session flow | Built, pending local provider validation |
-| PayPal order create and capture flow | Built, pending local sandbox validation |
+| Local demo checkout flow | Built and locally validated |
+| Stripe Checkout Session flow | Built, pending provider-account validation |
+| PayPal order create and capture flow | Built, pending provider-account validation |
 | Documentation | Public-facing starter docs in place |
 | Live payment readiness | Not production-certified |
 
-The project is currently intended for **test mode and sandbox development**. Live payment use needs webhook verification, server-side order records, deployment checks, logging, rate limiting, and a fulfilment flow that does not rely on the frontend success page.
+The project is currently intended for **test mode, sandbox development, and portfolio demonstration**. Live payment use needs webhook verification, server-side order records, deployment checks, logging, rate limiting, and a fulfilment flow that does not rely on the frontend success page.
 
 ## Why this repo exists
 
@@ -32,6 +33,7 @@ It is intentionally small enough to read and adapt, while still separating the p
 ## What it includes
 
 - Embeddable payment widget
+- Local demo checkout flow for testing the full widget path without provider accounts
 - Stripe Checkout Session route
 - PayPal sandbox order create and capture routes
 - Separate route and service files for each provider
@@ -42,6 +44,7 @@ It is intentionally small enough to read and adapt, while still separating the p
 - Security notes and limitations
 - AI-assisted development notes
 - GitHub Actions syntax check
+- npm lockfile for reproducible installs
 
 ## Tech stack
 
@@ -65,6 +68,8 @@ payment-integration-starter-kit/
 │   ├── cancel.html
 │   ├── error.html
 │   ├── styles.css
+│   ├── polish.css
+│   ├── rounding.css
 │   ├── payment-widget.js
 │   └── app.js
 ├── src/
@@ -73,6 +78,7 @@ payment-integration-starter-kit/
 │   ├── data/
 │   │   └── products.js
 │   ├── routes/
+│   │   ├── demo.routes.js
 │   │   ├── health.routes.js
 │   │   ├── paypal.routes.js
 │   │   ├── products.routes.js
@@ -98,6 +104,7 @@ payment-integration-starter-kit/
 ├── .nvmrc
 ├── CHANGELOG.md
 ├── LICENSE
+├── package-lock.json
 ├── package.json
 └── README.md
 ```
@@ -115,7 +122,7 @@ Starter Website Deposit
 
 The widget loads the product from the local API, checks which providers are configured, and renders the available checkout options.
 
-Stripe uses a server-created Checkout Session. PayPal uses the JavaScript SDK on the frontend, while order creation and capture are handled by the Express backend.
+Stripe uses a server-created Checkout Session. PayPal uses the JavaScript SDK on the frontend, while order creation and capture are handled by the Express backend. The demo checkout flow simulates a successful checkout locally so the widget, redirect path, and success page can be tested without external provider accounts.
 
 ## Basic widget embed
 
@@ -127,7 +134,7 @@ Stripe uses a server-created Checkout Session. PayPal uses the JavaScript SDK on
   window.PaymentIntegrationWidget.mount('#payment-widget', {
     merchantName: 'Example merchant',
     title: 'Complete your deposit',
-    subtitle: 'Choose card or PayPal to test the checkout flow.',
+    subtitle: 'Choose card, PayPal, or demo checkout to test the flow.',
     productId: 'website-deposit',
     testMode: true
   });
@@ -156,9 +163,9 @@ On Windows PowerShell:
 Copy-Item .env.example .env
 ```
 
-Edit `.env` with your own Stripe test key and PayPal sandbox configuration.
+Edit `.env` with your own Stripe test key and PayPal sandbox configuration if you want to test the real provider flows. The local demo checkout flow can run without Stripe or PayPal accounts.
 
-Run a backend syntax check:
+Run a backend and frontend syntax check:
 
 ```bash
 npm run check
@@ -183,6 +190,8 @@ PORT=4242
 APP_BASE_URL=http://localhost:4242
 NODE_ENV=development
 
+DEMO_CHECKOUT_ENABLED=true
+
 STRIPE_SECRET_KEY=sk_test_replace_me
 STRIPE_CURRENCY=gbp
 
@@ -199,6 +208,7 @@ Do not commit `.env` or real provider credentials.
 ```text
 GET  /api/health
 GET  /api/products/default
+POST /api/demo/checkout
 POST /api/stripe/create-checkout-session
 GET  /api/paypal/config
 POST /api/paypal/create-order
@@ -228,7 +238,7 @@ Before live use, the project would need at minimum:
 - `docs/WIDGET_USAGE.md` explains how to embed and configure the widget.
 - `docs/STRIPE.md` explains the Stripe flow.
 - `docs/PAYPAL.md` explains the PayPal flow.
-- `docs/TESTING.md` is the manual validation checklist.
+- `docs/TESTING.md` records manual validation results and remaining provider checks.
 - `docs/SECURITY_NOTES.md` lists security decisions and limitations.
 - `docs/PROVIDER_REFERENCES.md` keeps official docs links in one place.
 - `docs/CASE_STUDY_DRAFT.md` is a draft portfolio case study.
@@ -244,7 +254,7 @@ The repo keeps AI usage visible because the aim is to show a practical workflow:
 
 ## Next validation step
 
-The next step is to run the starter kit locally with real Stripe test credentials and PayPal sandbox credentials, then record the results in `docs/TESTING.md`.
+The local demo checkout flow has been validated. The next provider-specific step is to run the starter kit with real Stripe test credentials and PayPal sandbox credentials, then record those provider results in `docs/TESTING.md`.
 
 ## License
 
