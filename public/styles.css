@@ -10,6 +10,8 @@
   --surface-warm: #fbfaf7;
   --stripe: #635bff;
   --stripe-dark: #5148e5;
+  --demo: #202124;
+  --demo-dark: #0f1115;
   --ready: #1f7a4d;
   --danger: #9f1c12;
 }
@@ -178,12 +180,12 @@ code { border-bottom: 1px solid var(--line); font-size: 0.95em; }
   text-transform: uppercase;
 }
 
-.piw-stripe-button {
+.piw-stripe-button,
+.piw-demo-button {
   width: 100%;
   min-height: 46px;
   margin: 12px 0 10px;
   border: 0;
-  background: var(--stripe);
   color: #ffffff;
   cursor: pointer;
   display: flex;
@@ -194,16 +196,28 @@ code { border-bottom: 1px solid var(--line); font-size: 0.95em; }
   transition: background-color 150ms ease, transform 150ms ease;
 }
 
+.piw-stripe-button { background: var(--stripe); }
+.piw-demo-button { background: var(--demo); }
+
 .piw-stripe-button:hover:not(:disabled),
 .piw-stripe-button:focus-visible:not(:disabled) {
   background: var(--stripe-dark);
   transform: translateY(-1px);
 }
 
-.piw-stripe-button:focus-visible { outline: 3px solid rgba(99, 91, 255, 0.24); outline-offset: 2px; }
-.piw-stripe-button:disabled { cursor: not-allowed; opacity: 0.48; }
+.piw-demo-button:hover:not(:disabled),
+.piw-demo-button:focus-visible:not(:disabled) {
+  background: var(--demo-dark);
+  transform: translateY(-1px);
+}
 
-.piw-stripe-button[data-loading="true"]::after {
+.piw-stripe-button:focus-visible { outline: 3px solid rgba(99, 91, 255, 0.24); outline-offset: 2px; }
+.piw-demo-button:focus-visible { outline: 3px solid rgba(32, 33, 36, 0.2); outline-offset: 2px; }
+.piw-stripe-button:disabled,
+.piw-demo-button:disabled { cursor: not-allowed; opacity: 0.48; }
+
+.piw-stripe-button[data-loading="true"]::after,
+.piw-demo-button[data-loading="true"]::after {
   content: "";
   width: 13px;
   height: 13px;
